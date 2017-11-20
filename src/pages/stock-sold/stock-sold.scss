@@ -1,3 +1,13 @@
 page-stock-sold {
-
+    .flex-box {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    .flex-box>* {
+        margin: 8px;
+    }
+    img {
+        width: 84px;
+    }
 }

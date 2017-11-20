@@ -18,18 +18,18 @@ export class HttpProvider {
   private makeHeaders(): { headers: HttpHeaders } {
     const token = localStorage.getItem('token');
     const headers = token ?
-      new HttpHeaders().set('Authorisation', `Bearer ${token}`) :
+      new HttpHeaders().set('Authorization', `Bearer ${token}`) :
       new HttpHeaders();
     return { headers: headers };
   }
 
-  get(endpoint: string, id = 0, params?: any): Observable<any> {
+  get(endpoint: string, id = 0): Observable<any> {
     const url = id ? `${endpoint}/${id}` : endpoint;
     return this.http.get(url, this.makeHeaders());
   }
 
-  post(endpoint: string, id = 0, params?: any): Observable<any> {
-    const url = id ? `${endpoint}/${id}` : endpoint;
+  post(endpoint: string, params?: any): Observable<any> {
+    const url = endpoint;
     return this.http.post(url, params, this.makeHeaders());
   }
 
@@ -38,7 +38,7 @@ export class HttpProvider {
     return this.http.put(url, params, this.makeHeaders());
   }
 
-  delete(endpoint: string, id = 0, params?: any): Observable<any> {
+  delete(endpoint: string, id = 0): Observable<any> {
     const url = id ? `${endpoint}/${id}` : endpoint;
     return this.http.delete(url, this.makeHeaders());
   }

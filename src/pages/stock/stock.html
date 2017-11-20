@@ -7,17 +7,22 @@
 <ion-header>
     <ion-navbar>
         <button ion-button menuToggle>
-    <ion-icon name="menu"></ion-icon>
-  </button>
-        <ion-title>Stock</ion-title>
+            <ion-icon name="menu"></ion-icon>
+        </button>
+        <ion-title>Home / Stock</ion-title>
+        <ion-buttons right>
+            <button ion-button (click)="changeStockMode()">
+                <ion-icon name="{{ mode$|async }}"></ion-icon>
+            </button></ion-buttons>
     </ion-navbar>
 </ion-header>
 
 
 <ion-content padding>
     <ion-tabs>
-        <ion-tab [root]="all" tabIcon="list" tabTitle="All" tabBadge="32"></ion-tab>
-        <ion-tab [root]="creation" tabIcon="construct" tabTitle="Creation" tabBadge="1"></ion-tab>
-        <ion-tab [root]="sold" tabIcon="logo-euro" tabTitle="Sold" tabBadge="16"></ion-tab>
+        <ion-tab [root]="all" tabIcon="list" tabTitle="All" tabBadge="{{ allCount }}"></ion-tab>
+        <ion-tab [root]="creation" tabIcon="construct" tabTitle="Creation" tabBadge="{{ creationCount }}"></ion-tab>
+        <ion-tab [root]="sold" tabIcon="logo-euro" tabTitle="Sold" tabBadge="{{ soldsCount }}"></ion-tab>
+        <ion-tab [root]="add" tabIcon="add-circle" tabTitle="Add"></ion-tab>
     </ion-tabs>
 </ion-content>

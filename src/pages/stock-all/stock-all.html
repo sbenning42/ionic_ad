@@ -7,21 +7,27 @@
 <ion-header>
 
     <ion-navbar>
-        <ion-title>stock-all</ion-title>
+        <ion-title>All</ion-title>
     </ion-navbar>
 
 </ion-header>
 
 
 <ion-content padding>
-    <ion-list>
-        <ion-item>
+    <ion-list *ngIf="(mode$|async) === 'apps'">
+        <ion-item *ngFor="let article of articles">
             <ion-thumbnail item-start>
-                <img src="img/thumbnail-totoro.png">
+                <img src="{{ article.principale ? (basePicturesApi + article.principale) : ('assets/imgs/addef.jpg') }}">
             </ion-thumbnail>
-            <h2>My Neighbor Totoro</h2>
-            <p>Hayao Miyazaki • 1988</p>
-            <button ion-button clear item-end>View</button>
+            <h2 style="white-space: pre-line;">{{ article.name }}</h2>
+            <p>Ref: {{ article.id }}</p>
+            <ion-icon name="{{ article.icon }}" item-end></ion-icon>
+            <button ion-button clear item-end (click)="details(article)">View</button>
         </ion-item>
     </ion-list>
+    <div *ngIf="(mode$|async) === 'list'" class="flex-box">
+        <div *ngFor="let article of articles">
+            <img src="{{ article.principale ? (basePicturesApi + article.principale) : ('assets/imgs/addef.jpg') }}">
+        </div>
+    </div>
 </ion-content>

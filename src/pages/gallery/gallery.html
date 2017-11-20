@@ -9,11 +9,41 @@
         <button ion-button menuToggle>
     <ion-icon name="menu"></ion-icon>
   </button>
-        <ion-title>Gallery</ion-title>
+        <ion-title>Home / Gallery</ion-title>
     </ion-navbar>
 </ion-header>
 
 
 <ion-content padding>
+    <ion-list>
 
+        <ion-item *ngFor="let article of articles">
+            <ion-card>
+
+                <ion-item>
+                    <ion-avatar item-start>
+                        <img src="{{ article.ownerAvatar ? (basePicturesApi + article.ownerAvatar) : ('assets/imgs/addef.jpg') }}">
+                    </ion-avatar>
+                    <h2>{{ article.ownerName }}</h2>
+                </ion-item>
+
+                <img src="{{ article.principale ? (basePicturesApi + article.principale) : ('assets/imgs/addef.jpg') }}">
+
+                <ion-card-content style="white-space: pre-line;">
+                    <p style="white-space: pre-line;">{{ article.name }}</p>
+                </ion-card-content>
+                <ion-row>
+                    <ion-col>
+                        <p>Ref: {{ article.id }}</p>
+                    </ion-col>
+                    <ion-col></ion-col>
+                    <ion-col>
+                        <p>{{ article.price }} Euros</p>
+                    </ion-col>
+                </ion-row>
+
+            </ion-card>
+        </ion-item>
+
+    </ion-list>
 </ion-content>
