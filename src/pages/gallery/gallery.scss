@@ -1,1 +1,13 @@
-page-gallery {}
+page-gallery {
+    .flex-box {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    .flex-box>* {
+        margin: 8px;
+    }
+    .flex-item>img {
+        width: 84px;
+    }
+}

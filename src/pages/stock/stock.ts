@@ -2,17 +2,12 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { AlertController } from 'ionic-angular';
 
-
-import { StockAllPage } from './../stock-all/stock-all';
-import { StockCreationPage } from './../stock-creation/stock-creation';
-import { StockPendingPage } from './../stock-pending/stock-pending';
-import { StockSoldPage } from './../stock-sold/stock-sold';
+import { StockMasterPage } from './../stock-master/stock-master';
 import { StockAddPage } from './../stock-add/stock-add';
 
 import { StockModeProvider } from './../../providers/stock-mode/stock-mode';
 import { ArticleProvider } from './../../providers/article/article';
 import { Article } from './../../models/article';
-import { StockCreationPageModule } from '../stock-creation/stock-creation.module';
 import { Observable } from 'rxjs/Observable';
 
 /**
@@ -29,10 +24,10 @@ import { Observable } from 'rxjs/Observable';
 })
 export class StockPage {
 
-  all = StockAllPage;
-  creation = StockCreationPage;
-  pending = StockPendingPage;
-  sold = StockSoldPage;
+  all = StockMasterPage;
+  creation = StockMasterPage;
+  pending = StockMasterPage;
+  sold = StockMasterPage;
   add = StockAddPage;
 
   allCount: number;

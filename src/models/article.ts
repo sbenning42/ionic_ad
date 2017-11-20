@@ -10,6 +10,20 @@ export class Article {
     ownerName: string;
     ownerAvatar: string;
 
+    static clone(product): Article {
+        const article = new Article(
+            product.id,
+            product.user_id,
+            product.name,
+            product.description,
+            product.price
+        );
+        article.attach(product['pictures']);
+        article.owner(product['user']);
+        article.computeIcon(product['state'], product['marketplaces']);
+        return article;
+    }
+
     constructor(
         public id: string = '',
         public user_id: string = '',
@@ -40,12 +54,25 @@ export class Article {
     computeIcon(state, marketplaces) {
         if (state && state.name === 'undefined') {
             this.icon = 'construct';
-        } else if (marketplaces && marketplaces.find(mk => mk.status && mk.status.name === 'Sold')) {
-            this.icon = 'logo-euro';
-        } else if (marketplaces && marketplaces.find(mk => mk.status && (mk.status.name === 'ToDo' || mk.status.name === 'ToUpdate' || mk.status.name === 'Remove'))) {
-            this.icon = 'time';
-        } else if (marketplaces && marketplaces.find(mk => mk.status && mk.status.name === 'Online')) {
-            this.icon = 'cloud-done';
+            return ;
+        }
+        let sold = false;
+        let pending = false;
+        let online = false;
+        if (marketplaces) {
+            marketplaces.forEach(marketplace => {
+                if (!marketplace.status) { return ; }
+                sold = sold ? sold : marketplace.status.name === 'Sold';
+                pending = sold || pending ? pending : (marketplace.status.name === 'ToDo') ||
+                    (marketplace.status.name === 'ToUpdate') ||
+                    (marketplace.status.name === 'Remove');
+                online = sold || pending || online ? online : marketplace.status.name === 'Online';
+            });
+            this.icon = sold ? 'logo-euro' :
+                pending ? 'time' :
+                online ? 'cloud-done' :
+                'alarm';
+            console.log('ICON ' + this.icon);
         } else {
             this.icon = 'alarm';
         }

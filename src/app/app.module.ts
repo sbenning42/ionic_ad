@@ -20,10 +20,7 @@ import { AccountChannelsPage } from '../pages/account-channels/account-channels'
 import { AccountInformationsPage } from '../pages/account-informations/account-informations';
 import { AccountProfilePage } from '../pages/account-profile/account-profile';
 
-import { StockAllPage } from '../pages/stock-all/stock-all';
-import { StockCreationPage } from '../pages/stock-creation/stock-creation';
-import { StockPendingPage } from '../pages/stock-pending/stock-pending';
-import { StockSoldPage } from '../pages/stock-sold/stock-sold';
+import { StockMasterPage } from '../pages/stock-master/stock-master';
 import { StockAddPage } from '../pages/stock-add/stock-add';
 
 import { StatusBar } from '@ionic-native/status-bar';
@@ -32,6 +29,7 @@ import { HttpProvider } from '../providers/http/http';
 import { AuthProvider } from '../providers/auth/auth';
 import { ArticleProvider } from '../providers/article/article';
 import { StockModeProvider } from '../providers/stock-mode/stock-mode';
+import { SharedModeProvider } from '../providers/shared-mode/shared-mode';
 
 @NgModule({
   declarations: [
@@ -47,10 +45,7 @@ import { StockModeProvider } from '../providers/stock-mode/stock-mode';
     AccountChannelsPage,
     AccountInformationsPage,
     AccountProfilePage,
-    StockAllPage,
-    StockCreationPage,
-    StockPendingPage,
-    StockSoldPage,
+    StockMasterPage,
     StockAddPage,
   ],
   imports: [
@@ -72,10 +67,7 @@ import { StockModeProvider } from '../providers/stock-mode/stock-mode';
     AccountChannelsPage,
     AccountInformationsPage,
     AccountProfilePage,
-    StockAllPage,
-    StockCreationPage,
-    StockPendingPage,
-    StockSoldPage,
+    StockMasterPage,
     StockAddPage,
   ],
   providers: [
@@ -85,7 +77,8 @@ import { StockModeProvider } from '../providers/stock-mode/stock-mode';
     HttpProvider,
     AuthProvider,
     ArticleProvider,
-    StockModeProvider
+    StockModeProvider,
+    SharedModeProvider
   ]
 })
 export class AppModule {}

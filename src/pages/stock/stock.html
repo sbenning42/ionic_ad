@@ -13,16 +13,17 @@
         <ion-buttons right>
             <button ion-button (click)="changeStockMode()">
                 <ion-icon name="{{ mode$|async }}"></ion-icon>
-            </button></ion-buttons>
+            </button>
+        </ion-buttons>
     </ion-navbar>
 </ion-header>
 
 
 <ion-content padding>
     <ion-tabs>
-        <ion-tab [root]="all" tabIcon="list" tabTitle="All" tabBadge="{{ allCount }}"></ion-tab>
-        <ion-tab [root]="creation" tabIcon="construct" tabTitle="Creation" tabBadge="{{ creationCount }}"></ion-tab>
-        <ion-tab [root]="sold" tabIcon="logo-euro" tabTitle="Sold" tabBadge="{{ soldsCount }}"></ion-tab>
         <ion-tab [root]="add" tabIcon="add-circle" tabTitle="Add"></ion-tab>
+        <ion-tab [root]="all" [rootParams]="{ sort: 'all', count: allCount }" tabIcon="list" tabTitle="All" tabBadge="{{ allCount }}"></ion-tab>
+        <ion-tab [root]="creation" [rootParams]="{ sort: 'undefined', count: creationCount }" tabIcon="construct" tabTitle="Creation" tabBadge="{{ creationCount }}"></ion-tab>
+        <ion-tab [root]="sold" [rootParams]="{ sort: 'sold', count: soldsCount }" tabIcon="logo-euro" tabTitle="Sold" tabBadge="{{ soldsCount }}"></ion-tab>
     </ion-tabs>
 </ion-content>
