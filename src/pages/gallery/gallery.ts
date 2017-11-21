@@ -1,12 +1,16 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { AlertController } from 'ionic-angular';
+import { ModalController } from 'ionic-angular';
+import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
 
-import { sharedApi, basePicturesApi } from './../../api/api';
+import { ModalContactPage } from './../modal-contact/modal-contact';
+import { GalleryArticlePage } from './../gallery-article/gallery-article';
+import { basePicturesApi } from './../../api/api';
 import { SharedModeProvider } from './../../providers/shared-mode/shared-mode';
 import { ArticleProvider } from './../../providers/article/article';
 import { Article } from './../../models/article';
-import { Observable } from 'rxjs/Observable';
 
 /**
  * Generated class for the GalleryPage page.
@@ -32,43 +36,61 @@ export class GalleryPage {
   pageSize: number;
 
   articlesStream$: Observable<any>;
+  articlesSubscription: Subscription;
 
   mode$: Observable<string>;
 
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
-    private alertCtrl: AlertController,
+    public alertCtrl: AlertController,
+    public modalCtrl: ModalController,
     private articleProvider: ArticleProvider,
     private sharedMode: SharedModeProvider
   ) {
-    this.mode$ = this.sharedMode.getMode();
+    this.initThis();
+    this.articlePageSubscribe(this.makeInitialSream());
+  }
+
+  doInfinite(infiniteScroll) {
+    this.articlePageSubscribe(this.makeInfiniteSream(infiniteScroll));
+  }
+
+  initThis() {
     this.articles = [];
     this.pageSize = 20;
     this.pageIndex = 0;
     this.loaded = 0;
     this.originalCount = 0;
-    this.makeStream({
-      pageSize: this.pageSize,
-      pageIndex: this.pageIndex
-    });
-    const next = response => {
-      this.originalCount = response.count;
-      this.count = this.originalCount;
-      this.cloneProducts(response);
-    };
-    const error = error => this.alertError(error);
-    const complete = () => {
-      this.pageIndex += 1;
-      this.count -= this.pageSize;
-      this.loaded += this.pageSize;
-      if (this.loaded > this.originalCount) { this.loaded = this.originalCount; }
-    };
-    this.articlesStream$.subscribe(next, error, complete);
+    this.mode$ = this.sharedMode.getMode();
   }
 
-  makeStream(pageOptions) {
-    this.articlesStream$ = this.articleProvider.getApiSharedArticles(pageOptions);
+  makeStream(): Observable<any> {
+    return this.articleProvider.getApiSharedArticles({
+      pageSize: this.pageSize,
+      pageIndex: this.pageIndex,
+    });
+  }
+
+  makeInitialSream(): Observable<any> {
+    return this.makeStream().do(response => this.initCount(response.count));
+  }
+
+  makeInfiniteSream(infiniteScroll): Observable<any> {
+    return this.makeStream().do(response => infiniteScroll.complete());
+  }
+
+  articlePageSubscribe(stream$: Observable<any>) {
+    if (this.articlesSubscription) { this.articlesSubscription.unsubscribe(); }
+    this.articlesSubscription = stream$.subscribe(
+        response => this.cloneProducts(response),
+        error => this.alertError(error),
+        () => this.nextPage());
+  }
+
+  initCount(count: number) {
+    this.originalCount = count;
+    this.count = count;
   }
 
   cloneProducts(response) {
@@ -84,32 +106,29 @@ export class GalleryPage {
     alert.present();
   }
 
+  nextPage() {
+    this.pageIndex += 1;
+    this.count -= this.pageSize;
+    this.loaded += this.pageSize;
+    if (this.loaded > this.originalCount) { this.loaded = this.originalCount; }    
+  }
+
   ionViewDidLoad() {
     console.log('ionViewDidLoad GalleryPage');
   }
 
-  doInfinite(infiniteScroll) {
-    this.makeStream({
-      pageSize: this.pageSize,
-      pageIndex: this.pageIndex
+  details(article: Article) {
+    this.navCtrl.push(GalleryArticlePage, {
+      article: article
     });
-    const next = response => this.cloneProducts(response);
-    const error = error => {
-      this.alertError(error);
-      infiniteScroll.complete();
-    };
-    const complete = () => {
-      this.pageIndex += 1;
-      this.count -= this.pageSize;
-      this.loaded += this.pageSize;
-      if (this.loaded > this.originalCount) { this.loaded = this.originalCount; }
-      infiniteScroll.complete();
-    };
-    this.articlesStream$.subscribe(next, error, complete);
   }
 
   changeGalleryMode() {
     this.sharedMode.changeMode();
+  }
+
+  contact(article) {
+    this.navCtrl.push(ModalContactPage, { owner: article.owner });
   }
 
 }

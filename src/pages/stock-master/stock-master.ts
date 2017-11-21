@@ -1,14 +1,15 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { AlertController } from 'ionic-angular';
+import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 
+import { StockArticlePage } from './../stock-article/stock-article';
 import { StockModeProvider } from './../../providers/stock-mode/stock-mode';
 import { ArticleProvider } from './../../providers/article/article';
 import { basePicturesApi } from './../../api/api';
 import { Article } from './../../models/article';
 import { StockAddPage } from '../stock-add/stock-add';
-import { Observable } from 'rxjs/Observable';
 
 /**
  * Generated class for the StockMasterPage page.
@@ -102,7 +103,9 @@ export class StockMasterPage {
   }
 
   details(article: Article) {
-    console.log('Must show details for ' + article.name);
+    this.navCtrl.push(StockArticlePage, {
+      article: article
+    });
   }
 
   ionViewDidLoad() {

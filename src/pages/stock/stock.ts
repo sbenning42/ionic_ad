@@ -44,25 +44,32 @@ export class StockPage {
     private stockMode: StockModeProvider
   ) {
     this.mode$ = this.stockMode.getMode();
-    this.articleProvider.getApiArticles({
+    this.makeStream().subscribe(
+      response => this.initCounts(response.counts),
+      error => this.alertError(error));
+  }
+
+  makeStream(): Observable<any> {
+    return this.articleProvider.getApiArticles({
       pageSize: 20,
       pageIndex: 0,
       sort: 'all'
-    }).subscribe(
-      response => {
-        this.allCount = response.counts['all'];
-        this.creationCount = response.counts['undefined'];
-        this.soldsCount = response.counts['sold'];
-      },
-      error => {
-        let alert = this.alertCtrl.create({
-          title: 'Error',
-          subTitle: error.errors,
-          buttons: ['OK']
-        });
-        alert.present();
-      }
-    );
+    });
+  }
+
+  initCounts(counts) {
+    this.allCount = counts['all'];
+    this.creationCount = counts['undefined'];
+    this.soldsCount = counts['sold'];
+  }
+
+  alertError(error) {
+    let alert = this.alertCtrl.create({
+      title: 'Error',
+      subTitle: error.errors,
+      buttons: ['OK']
+    });
+    alert.present();
   }
 
   ionViewDidLoad() {

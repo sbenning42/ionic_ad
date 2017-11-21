@@ -30,24 +30,24 @@
                 <ion-avatar item-start>
                     <img src="{{ article.ownerAvatar ? (basePicturesApi + article.ownerAvatar) : ('assets/imgs/addef.jpg') }}">
                 </ion-avatar>
-                <h2>{{ article.ownerName }}</h2>
+                <div class="flex-box-text">
+                    <h2>{{ article.ownerName }}</h2>
+                    <a (click)="contact(article)">Contact</a>
+                </div>
             </ion-item>
 
             <img src="{{ article.principale ? (basePicturesApi + article.principale) : ('assets/imgs/addef.jpg') }}">
 
             <ion-card-content style="white-space: pre-line;">
                 <p style="white-space: pre-line;">{{ article.name }}</p>
-            </ion-card-content>
-
-            <ion-row>
-                <ion-col>
+                <div class="flex-box2">
                     <p>Ref: {{ article.id }}</p>
-                </ion-col>
-                <ion-col></ion-col>
-                <ion-col>
+                    <span class="flex-spacer"></span>
                     <p>{{ article.price }} Euros</p>
-                </ion-col>
-            </ion-row>
+                    <span class="flex-spacer"></span>
+                    <a (click)="details(article)">View</a>
+                </div>
+            </ion-card-content>
 
         </ion-card>
     </ion-list>
@@ -55,7 +55,7 @@
     <!-- Thumbnail Mode -->
     <div *ngIf="(mode$|async) === 'list'" class="flex-box">
         <div class="flex-item" *ngFor="let article of articles">
-            <img src="{{ article.principale ? (basePicturesApi + article.principale) : ('assets/imgs/addef.jpg') }}">
+            <img src="{{ article.principale ? (basePicturesApi + article.principale) : ('assets/imgs/addef.jpg') }}" (click)="details(article)">
         </div>
     </div>
 

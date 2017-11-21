@@ -7,13 +7,49 @@
 <ion-header>
     <ion-navbar>
         <button ion-button menuToggle>
-    <ion-icon name="menu"></ion-icon>
-  </button>
-        <ion-title>Article</ion-title>
+            <ion-icon name="menu"></ion-icon>
+        </button>
+        <ion-title *ngIf="!isPreview">Home / Gallery / Details</ion-title>
+        <ion-title *ngIf="isPreview">Preview</ion-title>
     </ion-navbar>
 </ion-header>
 
 
 <ion-content padding>
+
+    <ion-item no-lines>
+        <ion-avatar item-start>
+            <img src="{{ article.ownerAvatar ? (basePicturesApi + article.ownerAvatar) : ('assets/imgs/addef.jpg') }}">
+        </ion-avatar>
+        <div class="flex-box-text">
+            <h2>{{ article.ownerName }}</h2>
+            <a *ngIf="!isPreview" (click)="contact()">Contact</a>
+        </div>
+    </ion-item>
+
+    <ion-slides pager>
+        <ion-slide>
+            <img src="{{ article.principale ? (basePicturesApi + article.principale) : ('assets/imgs/addef.jpg') }}">
+        </ion-slide>
+        <ion-slide *ngFor="let picture of article.pictures">
+            <img src="{{ article.principale ? (basePicturesApi + picture.url_img) : ('assets/imgs/addef.jpg') }}">
+        </ion-slide>
+    </ion-slides>
+
+    <h4 style="white-space: pre-line;">{{ article.name }}</h4>
+    <sub>{{ article.size_width }} cm * {{ article.size_height }} cm * {{ article.size_depth }} cm - {{ article.weight }} kg</sub>
+    <p style="white-space: pre-line;">{{ article.description }}</p>
+    <p class="fix-right-marge" style="text-align:right">{{ article.price }} Euros</p>
+    <div class="flex-box">
+        <ion-badge>{{ article.category }}</ion-badge>
+        <ion-badge>{{ article.style }}</ion-badge>
+        <ion-badge>{{ article.period }}</ion-badge>
+        <ion-badge>{{ article.designer }}</ion-badge>
+        <ion-badge>{{ article.brand }}</ion-badge>
+        <ion-badge>{{ article.material }}</ion-badge>
+        <ion-badge>{{ article.color }}</ion-badge>
+        <ion-badge>{{ article.condition }}</ion-badge>
+    </div>
+
 
 </ion-content>
