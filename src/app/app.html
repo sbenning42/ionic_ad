@@ -8,7 +8,7 @@
     <ion-content>
         <ion-list *ngIf="isLog">
             <button menuClose ion-item *ngFor="let p of pages" (click)="openPage(p)">
-              {{p.title}}
+              {{p.title}} {{ p.niy }}
             </button>
         </ion-list>
     </ion-content>

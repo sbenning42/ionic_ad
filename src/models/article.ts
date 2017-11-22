@@ -28,6 +28,7 @@ export class Article {
     color: string;
 
     alreadyAnnexed: boolean;
+    alreadySold: boolean;
 
     static clone(product): Article {
         const article = new Article(
@@ -142,17 +143,6 @@ export class Article {
         this.color = color ? color.name : '';
 
         this.alreadyAnnexed = true;
-
-        console.log(`Annexe Article:
-            category: ${this.category},
-            style: ${this.style},
-            period: ${this.period},
-            condition: ${this.condition},
-            designer: ${this.designer},
-            brand: ${this.brand},
-            material: ${this.material},
-            color: ${this.color},
-            `);
     }
 
     attach(pictures: ArticlePicture[]) {
@@ -171,10 +161,16 @@ export class Article {
         this.mkChannels = [];
         this.feChannels = [];
         if (!product['marketplaces']) { return ; }
-        (this.mkChannels = product['marketplaces'].filter(ch => ch.type === 1))
-            .forEach(mk => mk.statusName = mk['status'] ? mk['status'].name : undefined);
+        (this.mkChannels = product['marketplaces'].filter(ch => ch.type === 1 || ch.type === 3))
+            .forEach(mk => {
+                mk.statusName = mk['status'] ? mk['status'].name : undefined;
+                this.alreadySold = this.alreadySold ? true : mk['status'] && mk['status'].name === 'Sold';
+            });
         (this.feChannels = product['marketplaces'].filter(ch => ch.type === 2))
-            .forEach(fe => fe.statusName = fe['status'] ? fe['status'].name : undefined);
+            .forEach(fe => {
+                fe.statusName = fe['status'] ? fe['status'].name : undefined;
+                this.alreadySold = this.alreadySold ? true : fe['status'] && fe['status'].name === 'Sold';
+            });
     }
 
     computeOwner(user) {
@@ -197,8 +193,8 @@ export class Article {
             marketplaces.forEach(marketplace => {
                 if (!marketplace.status) { return ; }
                 sold = sold ? sold : marketplace.status.name === 'Sold';
-                pending = sold || pending ? pending : (marketplace.status.name === 'ToDo') ||
-                    (marketplace.status.name === 'ToUpdate') ||
+                pending = sold || pending ? pending : (marketplace.status.name === 'To Do') ||
+                    (marketplace.status.name === 'To Update') ||
                     (marketplace.status.name === 'Remove');
                 online = sold || pending || online ? online : marketplace.status.name === 'Online';
             });

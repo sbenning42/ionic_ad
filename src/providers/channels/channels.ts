@@ -2,8 +2,9 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 
+import { Article } from './../../models/article';
 import { HttpProvider } from './../http/http';
-import { channelsApi } from './../../api/api';
+import { channelsApi, channelsPublishApi } from './../../api/api';
 
 /*
   Generated class for the ChannelsProvider provider.
@@ -20,6 +21,10 @@ export class ChannelsProvider {
 
   get(): Observable<any[]> {
     return this.http.get(channelsApi);
+  }
+
+  post(article: Article, channel): Observable<any> {
+    return this.http.post(channelsPublishApi, { product: { id: article.id }, marketplace: channel.name });
   }
 
 }

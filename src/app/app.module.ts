@@ -39,6 +39,7 @@ import { StockModeProvider } from '../providers/stock-mode/stock-mode';
 import { SharedModeProvider } from '../providers/shared-mode/shared-mode';
 import { AnnexeProvider } from '../providers/annexe/annexe';
 import { ChannelsProvider } from '../providers/channels/channels';
+import { ArticlesStorageProvider } from '../providers/articles-storage/articles-storage';
 
 @NgModule({
   declarations: [
@@ -95,7 +96,8 @@ import { ChannelsProvider } from '../providers/channels/channels';
     StockModeProvider,
     SharedModeProvider,
     AnnexeProvider,
-    ChannelsProvider
+    ChannelsProvider,
+    ArticlesStorageProvider
   ]
 })
 export class AppModule {}

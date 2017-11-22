@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { AlertController } from 'ionic-angular';
 import { ModalController } from 'ionic-angular';
+import { LoadingController } from 'ionic-angular';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 
@@ -40,11 +41,14 @@ export class GalleryPage {
 
   mode$: Observable<string>;
 
+  loader;
+
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
     public alertCtrl: AlertController,
     public modalCtrl: ModalController,
+    public loadingCtrl: LoadingController,
     private articleProvider: ArticleProvider,
     private sharedMode: SharedModeProvider
   ) {
@@ -65,6 +69,15 @@ export class GalleryPage {
     this.mode$ = this.sharedMode.getMode();
   }
 
+  startLoad() {
+    this.loader = this.loadingCtrl.create({content: "Please wait..."});
+    this.loader.present();
+  }
+
+  endLoad() {
+    this.loader.dismiss();
+  }
+
   makeStream(): Observable<any> {
     return this.articleProvider.getApiSharedArticles({
       pageSize: this.pageSize,
@@ -82,6 +95,7 @@ export class GalleryPage {
 
   articlePageSubscribe(stream$: Observable<any>) {
     if (this.articlesSubscription) { this.articlesSubscription.unsubscribe(); }
+    this.startLoad();
     this.articlesSubscription = stream$.subscribe(
         response => this.cloneProducts(response),
         error => this.alertError(error),
@@ -110,7 +124,8 @@ export class GalleryPage {
     this.pageIndex += 1;
     this.count -= this.pageSize;
     this.loaded += this.pageSize;
-    if (this.loaded > this.originalCount) { this.loaded = this.originalCount; }    
+    if (this.loaded > this.originalCount) { this.loaded = this.originalCount; }
+    this.endLoad();   
   }
 
   ionViewDidLoad() {

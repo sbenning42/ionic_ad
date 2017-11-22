@@ -5,6 +5,8 @@ import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 
 import { StockArticlePage } from './../stock-article/stock-article';
+import { ArticlesStorageProvider } from './../../providers/articles-storage/articles-storage';
+import { ChannelsProvider } from './../../providers/channels/channels';
 import { StockModeProvider } from './../../providers/stock-mode/stock-mode';
 import { ArticleProvider } from './../../providers/article/article';
 import { basePicturesApi } from './../../api/api';
@@ -25,6 +27,7 @@ import { StockAddPage } from '../stock-add/stock-add';
 })
 export class StockMasterPage {
 
+  channels: any[];
   articles: Article[];
   articlesSubscription: Subscription;
   mode$: Observable<string>;
@@ -41,7 +44,9 @@ export class StockMasterPage {
     public navParams: NavParams,
     public alertCtrl: AlertController,
     private articleProvider: ArticleProvider,
-    private stockMode: StockModeProvider
+    private channelsProvider: ChannelsProvider,
+    private stockMode: StockModeProvider,
+    private articleStorage: ArticlesStorageProvider
   ) {
     this.initThis();
     this.articlePageSubscribe(this.makeStream());
@@ -60,13 +65,18 @@ export class StockMasterPage {
     this.originalCount = this.navParams.data.count;
     this.count = this.originalCount;
     this.mode$ = this.stockMode.getMode();
+    this.articleStorage.reset(this.sort);
   }
 
-  makeStream(): Observable<any> {
-    return this.articleProvider.getApiArticles({
-      pageSize: this.pageSize,
-      pageIndex: this.pageIndex,
-      sort: this.sort
+  makeStream(): Observable<Article[]> {
+    return this.channelsProvider.get()
+      .switchMap(channels => {
+        this.channels = channels;
+        return this.articleProvider.getApiArticles({
+        pageSize: this.pageSize,
+        pageIndex: this.pageIndex,
+        sort: this.sort
+      });
     });
   }
 
@@ -74,7 +84,7 @@ export class StockMasterPage {
     return this.makeStream().do(response => infiniteScroll.complete());
   }
 
-  articlePageSubscribe(stream$: Observable<any>) {
+  articlePageSubscribe(stream$: Observable<Article[]>) {
     if (this.articlesSubscription) { this.articlesSubscription.unsubscribe(); }
     this.articlesSubscription = stream$.subscribe(
         response => this.cloneProducts(response),
@@ -83,7 +93,9 @@ export class StockMasterPage {
   }
 
   cloneProducts(response) {
+    console.log(response);
     this.articles = this.articles.concat(response.products.map(product => Article.clone(product)));
+    //this.articles = response;
   }
 
   alertError(error) {
@@ -100,11 +112,14 @@ export class StockMasterPage {
     this.count -= this.pageSize;
     this.loaded += this.pageSize;
     if (this.loaded > this.originalCount) { this.loaded = this.originalCount; }
+    this.articleStorage.nextPage();
   }
 
   details(article: Article) {
     this.navCtrl.push(StockArticlePage, {
-      article: article
+      article: article,
+      channels: this.channels,
+      fromPage: this
     });
   }
 

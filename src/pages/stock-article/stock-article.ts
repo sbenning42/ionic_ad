@@ -5,7 +5,7 @@ import { AlertController } from 'ionic-angular';
 import { GalleryArticlePage } from './../gallery-article/gallery-article';
 import { AnnexeProvider } from './../../providers/annexe/annexe';
 import { ChannelsProvider } from './../../providers/channels/channels';
-import { basePicturesApi } from './../../api/api';
+import { basePicturesApi, baseLogoApi } from './../../api/api';
 import { Article } from './../../models/article';
 
 /**
@@ -38,17 +38,26 @@ export class StockArticlePage {
     private channelsProvider: ChannelsProvider
   ) {
     this.article = this.navParams.data.article;
-    this.channelsProvider.get().subscribe(
-      response => {
-        this.mkChannels = response.filter(mkFilter => mkFilter.type === 1);
-        this.feChannels = response.filter(feFilter => feFilter.type === 2);
-        this.mkChannels.forEach(mk => {
-          const mkFound = this.article.mkChannels.find(mkc => mkc.name === mk.name);
-          status[mk.name] = mkFound.statusName;
-        });
-      },
-      errors => this.alertError(errors)
-    );
+    this.computeTemplatedChannel();
+  }
+
+  computeTemplatedChannel() {
+    this.mkChannels = this.navParams.data.channels
+      .filter(mkFilter => mkFilter.type === 1 || mkFilter.type === 3)
+      .map(mkMap => new Channel(mkMap.name, baseLogoApi + mkMap.avatar, this.findMkStatus(mkMap)));
+    this.feChannels = this.navParams.data.channels
+      .filter(feFilter => feFilter.type === 2)
+      .map(feMap => new Channel(feMap.name, baseLogoApi + feMap.avatar, this.findFeStatus(feMap)));
+  }
+
+  findMkStatus(channel: Channel) {
+    const found = this.article.mkChannels.find(mk => mk.name === channel.name);
+    return found ? found.statusName : '';
+  }
+
+  findFeStatus(channel: Channel) {
+    const found = this.article.feChannels.find(mk => mk.name === channel.name);
+    return found ? found.statusName : '';
   }
 
   ionViewDidLoad() {
@@ -60,8 +69,19 @@ export class StockArticlePage {
       annexe => {
         this.article.annexeFromAnnexe(annexe);
         this.navCtrl.push(GalleryArticlePage, { article: this.article, preview: true });
-      }
-    )
+      });
+  }
+
+  handlePublicationOn(channel) {
+    this.channelsProvider.post(this.article, channel).subscribe(
+      response => {
+        this.article = Article.clone(response);
+        console.log('Sold: ' + this.article.alreadySold);
+        const i = this.navParams.data.fromPage.articles.findIndex(a => +a.id === +this.article.id);
+        this.navParams.data.fromPage.articles[i] = this.article;
+        this.computeTemplatedChannel();
+      },
+      error => this.alertError(error));
   }
 
   alertError(error) {
@@ -73,4 +93,56 @@ export class StockArticlePage {
     alert.present();
   }
 
+}
+
+class Channel {
+
+  icon: string;
+  disabled: boolean;
+  checked: boolean;
+
+  constructor(
+    public name: string,
+    public logo: string,
+    public status: string,
+  ) {
+    switch (status) {
+      case 'To Do': {
+        this.checked = true;
+        this.disabled = false;
+        break ;
+      }
+      case 'To Update': {
+        this.checked = true;
+        this.disabled = false;
+        break ;
+      }
+      case 'Remove': {
+        this.checked = false;
+        this.disabled = false;
+        break ;
+      }
+      case 'Online': {
+        this.checked = true;
+        this.disabled = false;
+        break ;
+      }
+      case 'Sold': {
+        this.checked = true;
+        this.disabled = true;
+        break ;
+      }
+      case '': {
+        this.checked = false;
+        this.disabled = false;
+        break ;
+      }
+      default: {
+        this.checked = false;
+        this.disabled = true;
+        break ;
+      }
+      
+    }
+  }
 }

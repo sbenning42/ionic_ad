@@ -27,18 +27,29 @@
             <img src="{{ basePicturesApi + picture.url_img }}">
         </div>
     </div>
+
     <ion-list>
-        <h2> Marketplaces </h2>
-        <ion-item *ngFor="let mkChannel of article.mkChannels">
-            <ion-label>{{ mkChannel.name }}</ion-label>
-            <p>{{ mkChannel.statusName }}</p>
+        <ion-label> Marketplaces </ion-label>
+
+        <ion-item no-lines *ngFor="let mkChannel of mkChannels">
+            <ion-avatar item-start>
+                <img src="{{ mkChannel.logo }}">
+            </ion-avatar>
+            <h2 item-end>{{ mkChannel.status }}</h2>
+            <ion-toggle item-end [disabled]="article.alreadySold || mkChannel.disabled" checked="{{ mkChannel.checked }}" (ionChange)="handlePublicationOn(mkChannel)"></ion-toggle>
         </ion-item>
     </ion-list>
+
     <ion-list>
         <ion-label> Authentic Design </ion-label>
-        <ion-item *ngFor="let feChannel of article.feChannels">
-            <ion-label>{{ feChannel.name }}</ion-label>
-            <p>{{ feChannel.statusName }}</p>
+
+        <ion-item no-lines *ngFor="let feChannel of feChannels">
+            <ion-label item-start>
+                {{ feChannel.name }}
+            </ion-label>
+            <h2 item-end>{{ feChannel.status }}</h2>
+            <ion-toggle item-end [disabled]="feChannel.disabled" checked="{{ feChannel.checked }}" (ionChange)="handlePublicationOn(feChannel)"></ion-toggle>
         </ion-item>
     </ion-list>
+
 </ion-content>

@@ -23,7 +23,7 @@ export class MyApp {
 
   rootPage: any = HomePage;
 
-  pages: Array<{title: string, component: any}>;
+  pages: Array<{title: string, component: any, niy?: string}>;
 
   constructor(
     public platform: Platform,
@@ -41,7 +41,7 @@ export class MyApp {
   makeUserMenu() {
     this.pages = [
       { title: 'Home', component: HomePage },
-      { title: 'Account', component: AccountPage },
+      { title: 'Account', component: AccountPage, niy: '-- Not Implemented Yet --' },
       { title: 'Gallery', component: GalleryPage },
       { title: 'Stock', component: StockPage },
       { title: 'Logout', component: HomePage },
@@ -85,12 +85,14 @@ export class MyApp {
   }
 
   openPage(page) {
+    if (page.niy) { return ; }
     // Reset the content nav to have just this page
     // we wouldn't want the back button to show in this scenario
     if (page.title === 'Logout') {
       this.auth.logout();
+    } else {
+      this.nav.setRoot(page.component);
     }
-    this.nav.setRoot(page.component);
   }
 
 }
