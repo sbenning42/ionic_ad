@@ -18,21 +18,21 @@
 
     <!-- List Mode -->
     <ion-list *ngIf="(mode$|async) === 'apps'">
-        <ion-item *ngFor="let article of articles">
+        <ion-item *ngFor="let article of articles; let i = index">
             <ion-thumbnail item-start>
                 <img src="{{ article.principale ? (basePicturesApi + article.principale) : ('assets/imgs/addef.jpg') }}">
             </ion-thumbnail>
             <h2 style="white-space: pre-line;">{{ article.name }}</h2>
             <p>Ref: {{ article.id }}</p>
-            <ion-icon name="{{ article.icon }}" item-end></ion-icon>
-            <button ion-button clear item-end (click)="details(article)">View</button>
+            <ion-icon name="{{ article.icon }}" item-end (click)="details(article, i)"></ion-icon>
+            <!--button ion-button clear item-end (click)="details(article, i)">View</button-->
         </ion-item>
     </ion-list>
 
     <!-- Thumbnail Mode -->
     <div *ngIf="(mode$|async) === 'list'" class="flex-box">
-        <div *ngFor="let article of articles">
-            <img src="{{ article.principale ? (basePicturesApi + article.principale) : ('assets/imgs/addef.jpg') }}">
+        <div *ngFor="let article of articles; let i = index">
+            <img src="{{ article.principale ? (basePicturesApi + article.principale) : ('assets/imgs/addef.jpg') }}" (click)="details(article, i)">
         </div>
     </div>
 

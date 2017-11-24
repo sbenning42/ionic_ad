@@ -32,10 +32,11 @@
         <ion-label> Marketplaces </ion-label>
 
         <ion-item no-lines *ngFor="let mkChannel of mkChannels">
-            <ion-avatar item-start>
+            <!--ion-avatar item-start>
                 <img src="{{ mkChannel.logo }}">
-            </ion-avatar>
-            <h2 item-end>{{ mkChannel.status }}</h2>
+            </ion-avatar-->
+            <h3 item-start class="clear">{{ mkChannel.name }}</h3>
+            <p item-start>{{ mkChannel.status }}</p>
             <ion-toggle item-end [disabled]="article.alreadySold || mkChannel.disabled" checked="{{ mkChannel.checked }}" (ionChange)="handlePublicationOn(mkChannel)"></ion-toggle>
         </ion-item>
     </ion-list>

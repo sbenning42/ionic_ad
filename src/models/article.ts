@@ -201,10 +201,10 @@ export class Article {
             this.icon = sold ? 'logo-euro' :
                 pending ? 'time' :
                 online ? 'cloud-done' :
-                'alarm';
+                'pause';
             console.log('ICON ' + this.icon);
         } else {
-            this.icon = 'alarm';
+            this.icon = 'pause';
         }
     }
 

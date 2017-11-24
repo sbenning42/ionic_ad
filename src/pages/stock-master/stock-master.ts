@@ -27,6 +27,8 @@ import { StockAddPage } from '../stock-add/stock-add';
 })
 export class StockMasterPage {
 
+  selectedArticleIndex: number;
+
   channels: any[];
   articles: Article[];
   articlesSubscription: Subscription;
@@ -95,7 +97,6 @@ export class StockMasterPage {
   cloneProducts(response) {
     console.log(response);
     this.articles = this.articles.concat(response.products.map(product => Article.clone(product)));
-    //this.articles = response;
   }
 
   alertError(error) {
@@ -115,7 +116,8 @@ export class StockMasterPage {
     this.articleStorage.nextPage();
   }
 
-  details(article: Article) {
+  details(article: Article, i: number) {
+    this.selectedArticleIndex = i;
     this.navCtrl.push(StockArticlePage, {
       article: article,
       channels: this.channels,

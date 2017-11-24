@@ -21,7 +21,6 @@ export class ArticlesStorageProvider {
   private count: number;
   private miss: number;
   private got: number;
-
   private iSub: Subscription;
   private pageOptions: PageOptions;
   private articles: Article[];
@@ -89,6 +88,37 @@ export class ArticlesStorageProvider {
     );
   }
 
+}
+
+class SharedCollection {
+
+  public count: number;
+  public miss: number;
+  public got: number;
+  public iSub: Subscription;
+  
+  public pageOptions: PageOptions;
+  public articles: Article[];
+  public articles$: BehaviorSubject<Article[]>;
+
+  constructor(
+    public http: HttpProvider,
+    public articlesProvider: ArticleProvider,
+    public key: string
+  ) {
+    this.articles = [];
+    this.articles$ = new BehaviorSubject(this.articles);
+  }
+
+  get() {
+    return this.articlesProvider.getApiArticles(this.pageOptions).do(response => {
+      
+    });
+  }
+
+  nextPage() {
+    this.pageOptions.nextPage();
+  }
 }
 
 class PageOptions {
